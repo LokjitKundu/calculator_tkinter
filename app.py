@@ -28,16 +28,25 @@ class CalculatorGui(tk.Tk):
         
         self.operators1="+-×÷"
         self.operators2="+×÷"
+        
+        current=self.screen_value.get()
+        
         if text in self.operators1:
-            current=self.screen_value.get()
             # prevent typing consecutive operators
             if current and current[-1] in self.operators1:
                 return
+            
         if text in self.operators2:
-            current=self.screen_value.get()
             # prevent typing operators (except "-") if screen is empty
             if not current:
                 return
+            
+        if text==".":
+            for operator in "+-*/":
+                current=current.split(operator)[-1]
+            if "." in current:
+                return
+            
         if text=="=":
             self.calculate()
         elif text=="AC":
@@ -60,7 +69,7 @@ class CalculatorGui(tk.Tk):
     
     def key_input(self,event):
         
-        permitted_symbol="*/+-."
+        permitted_symbol="*/+-"
         symbol=event.char
         
         current=self.screen_value.get()
@@ -84,6 +93,13 @@ class CalculatorGui(tk.Tk):
             
             self.screen_value.set(current+symbol)
         
+        elif symbol==".":
+            # split the string to isolate the current value being typed (last one in the string)
+            for operator in "+-*/":
+                current=current.split(operator)[-1]
+            if "." in current:
+                return
+            self.screen_value.set(self.screen_value.get()+symbol)
         else:
             return
         
