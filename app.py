@@ -26,14 +26,14 @@ class CalculatorGui(tk.Tk):
     def click(self,event):
         text=event.widget.cget("text")
         
-        operators1="+-×÷"
-        operators2="+×÷"
-        if text in operators1:
+        self.operators1="+-×÷"
+        self.operators2="+×÷"
+        if text in self.operators1:
             current=self.screen_value.get()
             # prevent typing consecutive operators
-            if current and current[-1] in operators1:
+            if current and current[-1] in self.operators1:
                 return
-        if text in operators2:
+        if text in self.operators2:
             current=self.screen_value.get()
             # prevent typing operators (except "-") if screen is empty
             if not current:
@@ -41,6 +41,7 @@ class CalculatorGui(tk.Tk):
         if text=="=":
             self.calculate()
         elif text=="AC":
+            # clear screen
             self.screen_value.set("")
         elif text=="⌫":
             # deletes the last character
@@ -56,6 +57,43 @@ class CalculatorGui(tk.Tk):
             else:
                 # adds characters to the screen
                 self.screen_value.set(current+text)
+    
+    def key_input(self,event):
+        
+        permitted_symbol="*/+-."
+        symbol=event.char
+        
+        current=self.screen_value.get()
+
+        if symbol.isdigit():
+            self.screen_value.set(current+symbol)
+
+        elif symbol in permitted_symbol:
+            # replacing computer mathematical symbols with calculator symbols
+            symbol = symbol.replace("*", "×")
+            symbol = symbol.replace("/", "÷")
+
+            self.keyboard_operators1 = "+-*/"
+            self.keyboard_operators2 = "+*/"
+            
+            if symbol in self.keyboard_operators2:
+                if not current:
+                    return
+            if current and current[-1] in self.keyboard_operators1:
+                return
+            
+            self.screen_value.set(current+symbol)
+        
+        else:
+            return
+        
+    def backspace(self,event):
+
+        self.screen_value.set(self.screen_value.get()[:-1])
+    
+    def delete(self,event):
+        # clear screen with delete key
+        self.screen_value.set("")
 
     def screen(self):
 
@@ -141,7 +179,9 @@ class CalculatorGui(tk.Tk):
 
         # bind keyboard key
         self.bind("<Return>",self.calculate)
-
+        self.bind("<Key>",self.key_input)
+        self.bind("<BackSpace>",self.backspace)
+        self.bind("<Delete>",self.delete)
 if __name__ == "__main__":
     app = CalculatorGui()
     app.mainloop()
