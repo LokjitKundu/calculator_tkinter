@@ -21,7 +21,7 @@ A simple calculator built using Python and Tkinter.
 - Backspace → Delete last character
 - Delete → Clear screen
 - 0-9 → Numbers
-- + - * / → Operators
+- `+` `-` `*` `/` → Operators
 
 ## Screenshot
 
