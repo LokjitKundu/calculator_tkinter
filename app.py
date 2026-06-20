@@ -16,6 +16,10 @@ class CalculatorGui(tk.Tk):
         expr=expr.replace("×","*")
         expr=expr.replace("÷","/")
         try:
+            if not expr:
+                return
+            if expr[-1] in "+-*/":
+                return
             value=eval(expr)
             self.screen_value.set(str(value))
         except ZeroDivisionError:
