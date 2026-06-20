@@ -23,6 +23,10 @@ A simple calculator built using Python and Tkinter.
 - 0-9 → Numbers
 - `+` `-` `*` `/` → Operators
 
+## Note
+
+The calculator display is designed for the Digital-7 font. If the font is unavailable, the application will use the system's default font.
+
 ## Screenshot
 
 ![Calculator](screenshots/calculator_image.png)
