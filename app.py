@@ -13,13 +13,13 @@ class CalculatorGui(tk.Tk):
     def calculate(self,event=None):
         expr=self.screen_value.get()
         # replacing calculator symbols with computer mathematical symbols
+        if not expr:
+                return
+        if expr[-1] in "+-×÷":
+                return
         expr=expr.replace("×","*")
         expr=expr.replace("÷","/")
         try:
-            if not expr:
-                return
-            if expr[-1] in "+-*/":
-                return
             value=eval(expr)
             self.screen_value.set(str(value))
         except ZeroDivisionError:
@@ -30,17 +30,17 @@ class CalculatorGui(tk.Tk):
     def click(self,event):
         text=event.widget.cget("text")
         
-        self.operators1="+-×÷"
-        self.operators2="+×÷"
+        operators1="+-×÷"
+        operators2="+×÷"
         
         current=self.screen_value.get()
         
-        if text in self.operators1:
+        if text in operators1:
             # prevent typing consecutive operators
-            if current and current[-1] in self.operators1:
+            if current and current[-1] in operators1:
                 return
             
-        if text in self.operators2:
+        if text in operators2:
             # prevent typing operators (except "-") if screen is empty
             if not current:
                 return
@@ -62,7 +62,7 @@ class CalculatorGui(tk.Tk):
         else:
             current=self.screen_value.get()
             if current in ("ERROR", "CANNOT DIVIDE BY ZERO"):
-                # if error is faced, sets the screen value according to the pressed key value
+                # if error is faced, press any key to set the screen value according to the pressed key value
                 if text.isdigit() or text==".":
                     self.screen_value.set(text)
                 else:
@@ -115,6 +115,13 @@ class CalculatorGui(tk.Tk):
         # clear screen with delete key
         self.screen_value.set("")
 
+    def create_button(self,parent,text,button_padx=0,grid_padx=10,grid_pady=0,row=0,column=0,activebackground=None,activeforeground=None,bg=None,fg=None):
+        
+        button=tk.Button(parent,text=text,padx=button_padx,font="Helvetica 18",bg=bg,fg=fg,activebackground=activebackground,activeforeground=activeforeground)
+        button.grid(row=row,column=column,padx=grid_padx,pady=grid_pady)
+        button.bind("<Button-1>",self.click)
+        return
+
     def screen(self):
 
         # icon
@@ -134,68 +141,34 @@ class CalculatorGui(tk.Tk):
         frame.grid(row=1,column=0)
 
         # row 1
-        button=tk.Button(frame,text="AC",font="Helvetica 18",padx=0,bg="#4E4E50",fg="white",activebackground="#636366",activeforeground="white")  
-        button.grid(row=1,column=0,padx=10)
-        button.bind("<Button-1>",self.click) 
-
-        button=tk.Button(frame,text="%",font="Helvetica 18",padx=3,bg="#4E4E50",fg="white",activebackground="#636366",activeforeground="white")
-        button.grid(row=1,column=1,padx=10)
-        button.bind("<Button-1>",self.click)
-
-        button=tk.Button(frame,text="⌫",font="Helvetica 18",padx=0,bg="#4E4E50",fg="white",activebackground="#636366",activeforeground="white")
-        button.grid(row=1,column=2,padx=10)
-        button.bind("<Button-1>",self.click)
-
-        button=tk.Button(frame,text="÷",font="Helvetica 18",padx=7,bg="orange",activebackground="#E08500")
-        button.grid(row=1,column=3,padx=10)
-        button.bind("<Button-1>",self.click)
+        self.create_button(frame,"AC",row=1,column=0,activebackground="#636366",activeforeground="white",bg="#4E4E50",fg="white") 
+        self.create_button(frame,"%",button_padx=5,row=1,column=1,activebackground="#636366",activeforeground="white",bg="#4E4E50",fg="white") 
+        self.create_button(frame,"⌫",row=1,column=2,activebackground="#636366",activeforeground="white",bg="#4E4E50",fg="white") 
+        self.create_button(frame,"÷",button_padx=7,row=1,column=3,activebackground="#E08500",bg="orange",fg="black")
 
         # row 2
         for i in range(3):
-            button=tk.Button(frame,text=f"{i+7}",font="Helvetica 18",padx=7,bg="#F2F2F7")
-            button.grid(row=2,column=i,padx=10,pady=10)
-            button.bind("<Button-1>",self.click)
+            self.create_button(frame,f"{i+7}",button_padx=7,grid_pady=10,row=2,column=i,bg="#F2F2F7",fg="black")
 
-        button=tk.Button(frame,text="×",font="Helvetica 18",padx=7,bg="orange",activebackground="#E08500")
-        button.grid(row=2,column=i+1,padx=10)
-        button.bind("<Button-1>",self.click)
+        self.create_button(frame,"×",button_padx=7,row=2,column=i+1,activebackground="#E08500",bg="orange",fg="black")
 
         # row 3
         for i in range(3):
-            button=tk.Button(frame,text=f"{i+4}",font="Helvetica 18",padx=7,bg="#F2F2F7")
-            button.grid(row=3,column=i,padx=10)
-            button.bind("<Button-1>",self.click)
+            self.create_button(frame,f"{i+4}",button_padx=7,grid_pady=0,row=3,column=i,bg="#F2F2F7",fg="black")
         
-        button=tk.Button(frame,text="-",font="Helvetica 18",padx=7,bg="orange",activebackground="#E08500")
-        button.grid(row=3,column=i+1,padx=10,ipadx=3)
-        button.bind("<Button-1>",self.click)
+        self.create_button(frame,"-",button_padx=10,row=3,column=i+1,activebackground="#E08500",bg="orange",fg="black")
         
         # row 4
         for i in range(3):
-            button=tk.Button(frame,text=f"{i+1}",font="Helvetica 18",padx=7,bg="#F2F2F7")
-            button.grid(row=4,column=i,padx=10,pady=10)
-            button.bind("<Button-1>",self.click)
+            self.create_button(frame,f"{i+1}",button_padx=7,grid_pady=10,row=4,column=i,bg="#F2F2F7",fg="black")
         
-        button=tk.Button(frame,text="+",font="Helvetica 18",padx=7,bg="orange",activebackground="#E08500")
-        button.grid(row=4,column=i+1,padx=10)
-        button.bind("<Button-1>",self.click)
+        self.create_button(frame,"+",button_padx=7,row=4,column=i+1,activebackground="#E08500",bg="orange",fg="black")
 
         # row 5
-        button=tk.Button(frame,text="00",font="Helvetica 18",padx=1,bg="#F2F2F7")
-        button.grid(row=5,column=0,padx=10)
-        button.bind("<Button-1>",self.click)
-        
-        button=tk.Button(frame,text="0",font="Helvetica 18",padx=7,bg="#F2F2F7")
-        button.grid(row=5,column=1,padx=10)
-        button.bind("<Button-1>",self.click)
-        
-        button=tk.Button(frame,text=".",font="Helvetica 18",padx=10,bg="#F2F2F7")
-        button.grid(row=5,column=2,padx=10)
-        button.bind("<Button-1>",self.click)
-        
-        button=tk.Button(frame,text="=",font="Helvetica 18",padx=7,bg="orange",activebackground="#E08500")
-        button.grid(row=5,column=3,padx=10)
-        button.bind("<Button-1>",self.click)
+        self.create_button(frame,"00",button_padx=1,grid_pady=0,row=5,column=0,bg="#F2F2F7",fg="black")
+        self.create_button(frame,"0",button_padx=7,grid_pady=0,row=5,column=1,bg="#F2F2F7",fg="black")
+        self.create_button(frame,".",button_padx=10,grid_pady=0,row=5,column=2,bg="#F2F2F7",fg="black")
+        self.create_button(frame,"=",button_padx=7,grid_pady=0,row=5,column=3,bg="#F2F2F7",fg="black")
 
         # bind keyboard key
         self.bind("<Return>",self.calculate)
