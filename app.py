@@ -8,15 +8,20 @@ class CalculatorGui(tk.Tk):
         self.title("Calculator")
         self.resizable(False, False)
         self.screen()
-        self.buttons()
+        self.place_buttons()
+        # bind keyboard key
+        self.bind("<Return>",self.calculate)
+        self.bind("<Key>",self.key_input)
+        self.bind("<BackSpace>",self.backspace)
+        self.bind("<Delete>",self.delete)
 
     def calculate(self,event=None):
         expr=self.screen_value.get()
-        # replacing calculator symbols with computer mathematical symbols
         if not expr:
                 return
         if expr[-1] in "+-×÷":
                 return
+        # replacing calculator symbols with computer mathematical symbols
         expr=expr.replace("×","*")
         expr=expr.replace("÷","/")
         try:
@@ -30,8 +35,8 @@ class CalculatorGui(tk.Tk):
     def click(self,event):
         text=event.widget.cget("text")
         
-        operators1="+-×÷"
-        operators2="+×÷"
+        operators1="+-×÷%"
+        operators2="+×÷%"
         
         current=self.screen_value.get()
         
@@ -46,6 +51,7 @@ class CalculatorGui(tk.Tk):
                 return
             
         if text==".":
+            # The loop keeps only the part after the last operator
             for operator in "+-*/":
                 current=current.split(operator)[-1]
             if "." in current:
@@ -60,7 +66,6 @@ class CalculatorGui(tk.Tk):
             # deletes the last character
             self.screen_value.set(self.screen_value.get()[:-1])
         else:
-            current=self.screen_value.get()
             if current in ("ERROR", "CANNOT DIVIDE BY ZERO"):
                 # if error is faced, press any key to set the screen value according to the pressed key value
                 if text.isdigit() or text==".":
@@ -82,18 +87,19 @@ class CalculatorGui(tk.Tk):
             self.screen_value.set(current+symbol)
 
         elif symbol in permitted_symbol:
+
+            keyboard_operators1 = "+-*/"
+            keyboard_operators2 = "+*/"
+            
+            if symbol in keyboard_operators2:
+                if not current:
+                    return
+            if current and current[-1] in keyboard_operators1:
+                return
+            
             # replacing computer mathematical symbols with calculator symbols
             symbol = symbol.replace("*", "×")
             symbol = symbol.replace("/", "÷")
-
-            self.keyboard_operators1 = "+-*/"
-            self.keyboard_operators2 = "+*/"
-            
-            if symbol in self.keyboard_operators2:
-                if not current:
-                    return
-            if current and current[-1] in self.keyboard_operators1:
-                return
             
             self.screen_value.set(current+symbol)
         
@@ -135,7 +141,7 @@ class CalculatorGui(tk.Tk):
         self.grid_columnconfigure(0, weight=1)
         self.screen_entry.grid(row=0,column=0,ipady=10,padx=10,pady=20,sticky="ew")
         
-    def buttons(self):
+    def place_buttons(self):
 
         frame=tk.Frame(self)
         frame.grid(row=1,column=0)
@@ -170,11 +176,6 @@ class CalculatorGui(tk.Tk):
         self.create_button(frame,".",button_padx=10,grid_pady=0,row=5,column=2,bg="#F2F2F7",fg="black")
         self.create_button(frame,"=",button_padx=7,grid_pady=0,row=5,column=3,bg="#F2F2F7",fg="black")
 
-        # bind keyboard key
-        self.bind("<Return>",self.calculate)
-        self.bind("<Key>",self.key_input)
-        self.bind("<BackSpace>",self.backspace)
-        self.bind("<Delete>",self.delete)
 if __name__ == "__main__":
     app = CalculatorGui()
     app.mainloop()
