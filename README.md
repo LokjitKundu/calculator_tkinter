@@ -8,10 +8,15 @@ A simple calculator built using Python and Tkinter.
 - Subtraction (-)
 - Multiplication (×)
 - Division (÷)
+- Modulo (%) operation
 - Clear Screen (AC)
 - Backspace (⌫)
-- Divide-by-zero handling
+- Delete key support
+- Keyboard input support
 - Keyboard Enter support
+- Consecutive operator prevention
+- Decimal validation
+- Divide-by-zero handling
 - Read-only display
 - Custom application icon
 
